@@ -18,28 +18,40 @@
 
 */
 
-// TODO still need to support multi-word searching
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <curl/curl.h>
 
+#define MAX_LEN 50
+
 int main(int argc, char *argv[]) {
 	CURL *curl;
 	CURLcode res;
 	char baseUrl[] = "wttr.in/";
-	char suffix[50] = {""};
+	char suffix[MAX_LEN] = {""};
 
 	curl = curl_easy_init();
 
 	if (curl) {
-		if (argc == 2) {
-			strcpy(suffix, argv[1]);
-			strcpy(suffix, curl_easy_escape(curl, suffix, strlen(suffix)));
+		if (argc > 1) {
+			// concat arg list into one string
+			char *buff = (char *)calloc(MAX_LEN + 1, 0);
+			int offset = 0;
+			while (argv++, --argc) {
+				int toWrite = MAX_LEN - offset;
+				int written = snprintf(buff + offset, toWrite, "%s ", *argv);
+				if (toWrite < written) {
+					break;
+				}
+				offset += written;
+			}
+
+			strcpy(suffix, curl_easy_escape(curl, buff, strlen(buff)));
+			free(buff);
 		}
 
-		char *url = malloc(strlen(baseUrl) + strlen(suffix));
+		char *url = (char *)malloc(strlen(baseUrl) + strlen(suffix));
 		if (url != NULL) {
 			sprintf(url, "%s%s", baseUrl, suffix);
 

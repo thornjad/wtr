@@ -17,10 +17,11 @@ make install
 ```
 wtr
 wtr Houston
-wtr Paris
+wtr San Fransisco
 ```
 
-## Todo
+_Note: not case sensitive._
 
-wtr does not currently support multi-word searches, no even "San Fransisco".
-This is planned for the next version.
+## Why not use Bash?
+
+Because I wanted to use C.
